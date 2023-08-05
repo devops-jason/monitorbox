@@ -1,0 +1,21 @@
+---
+include_hostname: true
+include_ip_addresses: true
+
+email_from: 'monitorbox@localhost'
+email_to:
+  - 'jason@jlmillerelectric.com'
+  - 'nocturnalplaces@gmail.com'
+
+sendmail_host: 'localhost'
+sendmail_port: 25
+sendmail_authentication: false
+sendmail_user: ''
+sendmail_password: ''
+
+collector_url: 'https://localhost'
+collector_verify_ssl: false
+collector_user: 'monitorbox'
+collector_key: ''
+collector_client_name: 'monitorbox'
+

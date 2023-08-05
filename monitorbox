@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+venv/bin/activate
+
+./monitorbox_monitor.py
+
+

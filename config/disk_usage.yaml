@@ -1,0 +1,6 @@
+---
+yellow_disk_limit: 80
+red_disk_limit: 90
+
+exclude_mounts:
+  - '/mnt/cdrom'

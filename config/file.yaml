@@ -1,0 +1,7 @@
+---
+files:
+  - name: '/etc/sudoers'
+    size_limit: 10
+    user: 'root'
+    group: 'wheel'
+    mode: '33056'
