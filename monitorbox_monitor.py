@@ -8,6 +8,7 @@ import pwd
 import grp
 import socket
 from email.message import EmailMessage
+import psutil
 
 class Notify:
     def __init__(self, name):
@@ -130,7 +131,7 @@ class PortMonitor():
                     self.open = True
                     self.status = "okay"
                 except Exception as e:
-                    print(e)
+                    # print(e)
                     self.status = "failed"
                     self.message = "ip " + self.settings['ip'] + " " + self.settings['protocol'] + " port " + str(self.settings['port']) + " is closed."
                 finally:
@@ -157,7 +158,33 @@ class PortMonitor():
         self.checked = True
         return True
 
+class DiskMonitor:
+    def __init__(self, name, settings):
+        self.name = name
+        self.partitions = []
+        self.disk_usage = []
+        self.message = ""
+        self.status = "unknown"
+        self.settings = settings
+        self.checked = False
 
+    def check(self):
+        self.partitions = psutil.disk_partitions()
+
+        for partition in self.partitions:
+            if partition.mountpoint in self.settings['exclude_mounts']:
+                next
+            else:
+                self.disk_usage += [{'mountpoint' : partition.mountpoint, 'device' : partition.device, 'disk_usage' : psutil.disk_usage(partition.mountpoint).percent}]
+        
+        for du_percent in self.disk_usage:
+            break
+            if du_percent['disk_usage'] >= float(self.settings['max_allowable_useage']):
+               self.message += "mountpoint " + du_percent['mountpoint'] + " on device " + du_percent['device'] + " is at " + du_percent['disk_usage'] + " percent usage.\n"
+               self.status = "failed"
+        
+        self.checked = True
+        return True
 
 
 
@@ -218,3 +245,17 @@ for port_monitor in port_monitor_config['ports']:
 
     print(connection_name + " : " + port_monitor_object.status)
 
+print()
+print("-Disk Usage Status-")   
+monitor_name = 'diskusage'
+
+disk_usage_monitor_object = DiskMonitor(monitor_name, disk_usage_monitor_config)
+disk_usage_monitor_object.check()
+
+notification_object.set_notification_message(disk_usage_monitor_object.message)
+
+if disk_usage_monitor_object.status == "failed":
+    notification_object.send_notifiction()
+
+for partition in disk_usage_monitor_object.disk_usage:
+    print("mountpoint " + partition['mountpoint'] + " usage " + str(partition['disk_usage']) + "%")
