@@ -1,6 +1,5 @@
 ---
-yellow_disk_limit: 80
-red_disk_limit: 90
+max_allowable_useage: '80'
 
 exclude_mounts:
   - '/mnt/cdrom'
